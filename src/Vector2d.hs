@@ -1,8 +1,9 @@
 module Vector2d where
 
+import           Control.Monad (guard)
 import           Data.Vector
-import           Prelude     hiding (head, length, map, replicate)
-import qualified Prelude     as P
+import           Prelude       hiding (head, length, map, replicate, zip)
+import qualified Prelude       as P
 import           Util
 
 data Vector2d a = Vector2d (Int, Int) (Vector (Vector a))
@@ -37,7 +38,19 @@ replace (Vector2d s v) (x,y) a = Vector2d s v'
 
 within :: (Int, Int) -> Vector2d a -> Bool
 within (x,y) (Vector2d (w, h) _)
-  | x < 0  || y < 0       = False
+  | x < 0  || y < 0  = False
   | x >= w || y >= h = False
-  | otherwise                 = True
+  | otherwise        = True
+
+zipV2 :: Vector2d a -> Vector2d b -> Vector2d (a, b)
+zipV2 (Vector2d s v1) (Vector2d _ v2) = Vector2d s $ map (uncurry zip) $ zip v1 v2
+
+diffV2 :: Eq a => Vector2d a -> Vector2d a -> Vector ((Int, Int), a)
+diffV2 v1 v2 = do
+  let (Vector2d _ v) = zipV2 v1 v2
+  (y, row)          <- enumerate v
+  (x, (a,b))        <- enumerate row
+  guard (a/=b)
+  return ((x,y), b)
+    where enumerate v = zip (generate (length v) id) v
 

@@ -25,5 +25,6 @@ executable boxboy
   build-depends:       base >=4.14 && <4.15
                      , vector
                      , ansi-terminal
+                     , time
   -- hs-source-dirs:
   default-language:    Haskell2010
