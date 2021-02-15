@@ -10,8 +10,7 @@ data Tile = Empty | Block | PlayerTile
   deriving (Show, Eq)
 
 data GameState = GameState
-  { sWorldSize  :: (Int, Int)
-  , sWorld      :: Vector2d Tile
+  { sWorld      :: Vector2d Tile
   , sQbbyCoords :: (Int, Int)
   } deriving (Show)
 
@@ -20,8 +19,7 @@ world = fromLists $ reverse $ replicate 10 Block : replicate 5 (replicate 10 Emp
 
 initState :: GameState
 initState = GameState
-  { sWorldSize = size world
-  , sWorld = world
+  { sWorld = world
   , sQbbyCoords = (1,snd (size world) - 2)
   }
 
