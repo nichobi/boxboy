@@ -34,7 +34,7 @@ inputMode False =  showCursor
                 >> hSetEcho stdin True
 
 loopWithDelay t f = g
-  where g x = (f x) `delayed` t >>= g
+  where g x = f x `delayed` t >>= g
 
 delayed :: IO a -> Double -> IO a
 delayed f t = do

@@ -2,12 +2,15 @@ module Vector2d where
 
 import           Control.Monad (guard)
 import           Data.Vector
-import           Prelude       hiding (head, length, map, replicate, zip)
+import           Prelude       hiding (foldl, head, length, map, replicate, zip)
 import qualified Prelude       as P
 import           Util
 
 data Vector2d a = Vector2d (Int, Int) (Vector (Vector a))
   deriving (Show)
+
+instance Functor Vector2d where
+  fmap f (Vector2d s v) = Vector2d s $ fmap f <$> v
 
 initialise :: (Int, Int) -> a -> Vector2d a
 initialise (w, h) a = Vector2d (w, h) $ replicate h (replicate w a)
@@ -27,14 +30,14 @@ size (Vector2d s _) = s
 atIndex :: Vector2d a -> (Int, Int) -> a
 atIndex (Vector2d _ v) (x,y) = (v ! y) ! x
 
-instance Functor Vector2d where
-  fmap g (Vector2d s v) = Vector2d s (map (map g) v)
-
 replace :: Vector2d a -> (Int, Int) -> a -> Vector2d a
 replace (Vector2d s v) (x,y) a = Vector2d s v'
   where r  = v ! y
         r' = r // [(x, a)]
         v' = v // [(y, r')]
+
+replaceMany :: Vector2d a -> Vector ((Int, Int), a) -> Vector2d a
+replaceMany = foldl (uncurry . replace)
 
 within :: (Int, Int) -> Vector2d a -> Bool
 within (x,y) (Vector2d (w, h) _)
